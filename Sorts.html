@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2018 by anonymous (http://jsbin.com/yesokeyolu/2/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2018 by anonymous (http://jsbin.com/gemodefaki/1/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<meta name="robots" content="noindex">
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Sort page</title>
+<style id="jsbin-css">
+@import url('https://fonts.googleapis.com/css?family=Gugi|Ubuntu|Source+Code+Pro');
+
+*{
+  margin: 0;
+  padding: 0;
+}
+
+:root{
+  --html-bg: #4B0082;
+  --html-color: #FFA500;
+  --Gugi: 'Gugi', cursive;
+  --Ubuntu: 'Ubuntu', sans-serif;
+  --SrcCode: 'Source Code Pro', monospace;
+  --radio-col: #8b008b;
+  --cons-h5: #fff;
+  --cons-bg-col: grey;
+  --cons-fr-col: #696969;
+}
+
+.blue{ color: #00FFFF; }
+
+.green{ color: #42f44b; }
+
+.orange{ color: #ffa838; }
+
+.white{ color: #fff; }
+
+.red{ color: #c10000; }
+
+.grey{ color: #cecece; }
+
+html, body{
+  width: 100%;
+  font-family: var(--Ubuntu);
+  background-color: var(--html-bg);
+}
+
+.wrapper{
+  margin: 0 auto;
+  width: 70%;
+  padding: 20px 5%;
+  background-color: #fff;
+}
+
+.edit-space{
+  text-align: center;
+}
+
+.edit-space p{
+  margin-bottom: 5px;
+  font-size: 0.9em;
+  color: grey;
+  text-align: left;
+}
+
+#arrayField:focus{
+  border-color: blue;
+  background-color: #F0FFFF;
+}
+
+#arrayField{
+  width: 100%;
+  padding: 5px;
+  border: 2px solid grey;
+  font-family: var(--Ubuntu);
+}
+
+.but:nth-child(n+5){  /* опять какая-то фигня! .but:last-child{} jsbin не видит! вместо n+1 работает n+5 !1!!1 */
+    margin-left: 20px;
+}
+
+.but:hover{
+  background-color: blue;
+  cursor: pointer;
+}
+
+.but{
+  margin: 10px 0 15px;
+  padding: 2px 10px;
+  font-size: 1em;
+  font-family: var(--Ubuntu);
+  color: #fff;
+  background-color: grey;
+  border: 0;
+  text-transform: uppercase;
+  transition: background-color 0.25s linear;
+}
+
+/* БЛОК ВЫБОРА СОРТИРОВОК */
+.sort-block{
+  display: inline-block;
+  position: relative;
+  padding: 2px 5px 2px 18px;
+  margin: 4px;
+  color: var(--radio-col);
+  cursor: pointer;
+}
+
+.sort-block > input{
+  position: absolute;
+  opacity: 0;
+}
+
+.sort-block span{
+  position: absolute;
+  top: 4px;
+  left: 0;
+  height: 12px;
+  width: 12px;
+  border: 2px solid var(--radio-col);
+  border-radius: 50%;
+}
+
+.sort-block span:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.sort-block input:checked ~ span:after {
+  display: block;
+}
+
+.sort-block span:after {
+  top: 2px;
+  left: 2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--radio-col);
+}
+
+/* вывод консоли */
+.console-block{
+  width: 80%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  color: var(--cons-h5);
+  border: 2px solid var(--cons-fr-col);
+  background-color: var(--cons-bg-col);
+}
+
+.console-block h5{
+  display: block;
+  height: 20px;
+  position: relative;
+  top: -2px;
+  width: 100%;
+  background-color: var(--cons-fr-col);
+}
+
+.console{
+  height: 60vh;
+  width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  font-size: 0.8em;
+  font-family: var(--SrcCode);
+  border: 0;
+  background-color: var(--cons-bg-col);
+}
+</style>
+</head>
+<body>
+  
+  <div class="wrapper">
+    <form>
+      <div class="edit-space">
+        <p>Enter an array by comma-separated numbers or press GENERATE</p>
+        <input type="text" id="arrayField"><br>
+        <input type="button" onclick="generate()" class="but" value="generate"><!-- 
+     --><input type="button" onclick="handler()" class="but" value="sort"><!-- 
+     --><input type="button" onclick="autotest()" class="but" value="run autotest"><br>
+      </div>
+      
+      <label for="sort-1" class="sort-block">Bubble sort
+        <input type="radio" id="sort-1" value="BubbleSort" name="sortType">
+        <span></span>
+      </label>  
+      
+      <label for="sort-2" class="sort-block">Insertion sort
+        <input type="radio" id="sort-2" value="InsertionSort" name="sortType">
+        <span></span>
+      </label>  
+        
+      <label for="sort-3" class="sort-block">Selection sort
+        <input type="radio" id="sort-3" value="SelectionSort" name="sortType">
+        <span></span>
+      </label>
+      
+      <label for="sort-4" class="sort-block">Merge sort
+        <input type="radio" id="sort-4" value="MergeSort" name="sortType">
+        <span></span>
+      </label>
+      
+      <label for="sort-5" class="sort-block">Heapsort  
+        <input type="radio" id="sort-5" value="Heapsort" name="sortType">
+        <span></span>
+      </label>
+      
+      <label for="sort-6" class="sort-block">Quicksort
+        <input type="radio" id="sort-6" value="Quicksort" name="sortType">
+        <span></span>
+      </label>
+      
+      
+      <label for="sort-7" class="sort-block">Shellsort
+        <input type="radio" id="sort-7" value="Shellsort" name="sortType">
+        <span></span>
+      </label>
+        
+      <label for="sort-8" class="sort-block">Comb sort
+        <input type="radio" id="sort-8" value="CombSort" name="sortType">
+        <span></span>
+      </label>
+        
+      <label for="sort-9" class="sort-block">Counting sort
+        <input type="radio" id="sort-9" value="CountingSort" name="sortType">
+        <span></span>
+      </label>
+        
+      <label for="sort-10" class="sort-block">Bucket sort
+        <input type="radio" id="sort-10" value="BucketSort" name="sortType">
+        <span></span>
+      </label>
+      
+      <label for="sort-11" class="sort-block">Radix sort
+        <input type="radio" id="sort-11" value="RadixSort" name="sortType">
+        <span></span>
+      </label>
+      
+        
+      <label for="sort-12" class="sort-block">Tree sort
+        <input type="radio" id="sort-12" value="TreeSort" name="sortType">
+        <span></span>
+      </label>
+        
+      
+      <label for="sort-13" class="sort-block">Bogosort
+        <input type="radio" id="sort-13" value="Bogosort" name="sortType">
+        <span></span>
+      </label>
+    </form>
+  </div>
+  
+  <div class="console-block">
+    <h5>history / result</h5>
+    <div class="console" id="consLog">
+    </div>
+  </div>
+  
+<script id="jsbin-javascript">
+
+
+</script>
+<script id="jsbin-javascript">
+var array;
+var field = document.getElementById("arrayField");
+var log = document.getElementById("consLog");
+
+function whatIsSort() {
+  var arrRadio = document.getElementsByName('sortType');
+  var sortType;
+  for(var i = 0; i < arrRadio.length; i++) {
+      if(arrRadio[i].checked){
+          sortType = arrRadio[i].value;
+      }
+  }
+  return sortType;
+}
+
+function genNum(){
+  return Math.floor(Math.random() * 200 - 100);
+}
+
+function generate() {
+  array = Array.from({length: 10}, genNum);
+  field.value = array;
+}
+
+function toLog(str, color){  // color can be 'blue', 'green', 'white', 'orange'
+  var p = document.createElement("P");
+  var node = document.createTextNode(str);
+  p.appendChild(node);
+  
+  var attr = document.createAttribute("class");
+  attr.value = color;
+  
+  p.setAttributeNode(attr);
+  document.getElementById("consLog").appendChild(p);
+}
+
+function setSortFunc(x){
+  switch(x){
+    case "BubbleSort":
+      bubbleS();
+      break;
+    case "InsertionSort":
+      insertionS();
+      break;
+    case "SelectionSort":
+      selectionS();
+      break;
+    case "MergeSort":
+      mergeSPrepare();
+      break;
+    case "Heapsort":
+      heapsort();
+      break;
+    case "Quicksort":
+      quickSort();
+      break;
+    case "Shellsort":
+      shellSort();
+      break;
+    case "CombSort":
+      combS();
+      break;
+    case "CountingSort":
+      const minVal = -100, maxVal = 100; // минимальное и максимальное значение диапазона чисел
+      countingS(minVal, maxVal);
+      break;
+    case "BucketSort":
+      bucketSort(); // можно изменять размер корзины (по умолчанию 5)
+      break;
+    case "RadixSort":
+      array = radixSortLSD(array);
+      break;
+    case "TreeSort":
+      array = treeSort(array);
+      break;
+    case "Bogosort":
+      array = bogosort(array);
+      break;
+    default:
+      alert("How did you get here...");
+  }
+}
+
+function bubbleS(){
+  var temp;
+  for(var i = 0; i < array.length; i++){
+    for(var j = 0; j < array.length; j++){
+      if (array[j+1] < array[j]){
+        temp = array[j];
+        array[j] = array[j+1];
+        array[j+1] = temp;
+      }
+    }
+  }
+}
+
+
+/*
+ * Сортировка вставками
+ * Лучшее/Среднее/Худшее: O(n) / O(n^2) / O(n^2)
+ * Каждый следующий эл-т находит своё место в уже отсортированной 
+ * части массива сравниваясь с ней.
+ */
+function insertionS(){
+  var ind, temp;
+  for (var i = 0; i < array.length - 1; i++){
+    ind = i + 1;
+    temp = array[ind];
+    for (var j = i + 1; j > 0; j--){
+      if (temp < array[j - 1]){
+        array[j] = array[j - 1];
+        ind = j - 1;
+      }
+    }
+    array[ind] = temp;
+  }
+}
+
+/*
+ * Сортировка выбором
+ * Лучшее/Среднее/Худшее: O(n^2)
+ * Наименьший найденный элемент меняется местами с первым эл-ом 
+ * неотсортированной части массива.
+ */
+function selectionS(){
+  for (var min, i = 0; i < array.length - 1; i++){
+    min = i;
+    for(var temp, j = i + 1; j < array.length; j++){
+      if( array[j] < array[min]){
+        min = j;
+      }
+    }
+    temp = array[i];
+    array[i] = array[min];
+    array[min] = temp;
+  }
+}
+
+/*
+ * Сортировка слиянием
+ * Лучшее/Среднее/Худшее: О(n log(n))
+ * Разделяем массив рекурсивно до "поэлементных" массивов, на обратном 
+ * ходе рекурсии производим слияние сравнивая для вставки элементы из 
+ * уже отсортированных последовательностей. Оставшийся в сравнении из 
+ * двух, сравнивается со следующим элементом второй последовательности.
+ * Если в одной из последовательностей заканчиваются эл-ты, то в конец 
+ * вставляется другая (уже сортированная) посл-ть.
+ */
+function merge(first, last){
+  var middle, start, final, j;
+  middle = Math.floor(( first + last ) / 2);
+  start = first;
+  final = middle + 1;
+  for ( j = first; j <= last; j++){ //выполнять от начала до конца
+    if ((start <= middle) && ((final > last) || (array[start] < array[final]))){
+      bufArr.elems[j] = array[start];
+      start++;
+    } else {
+      bufArr.elems[j] = array[final];
+      final++;
+    }
+  }
+  //возвращение результата в список
+  for (j = first; j <= last; j++){
+    array[j] = bufArr.elems[j];
+  }
+}
+
+function mergeSort(first, last){
+  if (first < last){
+    mergeSort(first, Math.floor((first + last) / 2) );
+    mergeSort(Math.floor((first + last) / 2 + 1), last);
+    merge(first, last);
+  }
+}
+
+function mergeSPrepare(){
+  bufArr.elems = new Array(array.length); // создаем поле объекта - массив 
+  for (var i = 0; i < array.length; i++){
+    bufArr.elems[i] = 0;
+  }
+  mergeSort(0, array.length - 1);
+}
+
+
+/*
+ * Пирамидальная сортировка (кучей)
+ * Лучшее/Среднее/Худшее: О(n log(n))
+ * Выстраиваем на массиве дерево, где значение в вершине больше, чем
+ * значения в её потомках. Меняем местами первый (нулевой) и последний 
+ * неотсортированный.
+ */
+function swap(i, j) {
+    var tmp = array[i];
+    array[i] = array[j];
+    array[j] = tmp;
+}
+
+function heapsort() {
+    heapify(array.length);
+    for (var i = array.length - 1; i > 0; i--) {
+        swap(i, 0);
+        max_heapify(0, i);
+    }
+
+    function heapify(length) {
+    	for (var i = Math.floor(length / 2); i >= 0; i--) {
+        	max_heapify(i, length);
+    	}
+	}
+
+	function max_heapify(i, length) {
+    	while (true) {
+    	    var left = i * 2 + 1;
+    	    var right = i * 2 + 2;
+    	    var largest = i;        
+	
+    	    if ((left < length) && (array[left] > array[largest]) ) {
+    	        largest = left;
+    	    }
+    	    if ((right < length) && (array[right] > array[largest])) {
+   	         largest = right;
+    	    }
+    	    if (i == largest) {
+    	        break;
+   	     	}
+	
+    	    swap(i, largest);
+    	    i = largest;
+    	}
+	}
+}
+
+/* // Функция для отладки, трассировки значений массива
+var spStr = ""
+function commit(){
+	array.forEach(function(item) {
+  		spStr += item + " "
+	});
+	spStr += "\n"
+}
+*/
+
+/*
+ * Быстрая сортировка
+ * Лучшее/Среднее/Худшее: О(n log(n)) / О(n log(n)) / O(n^2)
+ * Массив разбивается на три группы: меньше граничного эл-та, 
+ * равны граничному эл-ту и больше чем г.э.
+ * С первой и последней группой рекурсивно проделывается та же
+ * операция. 
+ */
+function quickSort(){ 
+	function partition(lo, hi){
+    	var i = lo, j = hi + 1;
+
+    	while(true){
+    		while(array[++i] < array[lo]){
+        		if ( i == hi ) break;
+    		}
+    		while (array[--j] > array[lo]){
+      			if ( j == lo ) break;
+    		}
+    		if (i >= j) break;
+    		swap(i, j);
+    		//commit();
+    	}
+    	swap(lo, j);
+    	//commit();
+    	return j;
+  	}
+
+	function sort(lo, hi){
+    	if (hi <= lo){
+    		return;
+    	} 
+    	var j = partition(lo, hi);
+    	sort(lo, j - 1);
+    	sort(j + 1, hi);
+  	}
+
+  	//spStr = "";
+  	//commit();
+
+  	sort(0, array.length - 1);
+  	
+  	//alert(spStr);
+}
+
+/*
+ * Сортировка методом Шелла
+ * Лучшее/Среднее/Худшее: О(n (log(n))^2) / ~ / O(n^2)
+ * "Улучшение" сортировки вставками, где сравниваются не соседние эл-ты, 
+ * а отстоящие на интервал i. i доходит от N/2 до 1. При i = 1 сортировка 
+ * является простой сортировкой вставками. 
+ */
+function shellSort() {
+	var k, i = Math.floor(array.length / 2);
+    while (i > 0) {
+
+    	for (var j = 0; j < array.length; j++) {
+    		var temp = array[j];
+    		k = j;
+
+        	while ((k >= i) && (array[k - i] > temp)) {
+        		array[k] = array[k - i];
+        		k -= i;
+        	}
+
+        	array[k] = temp;
+        }
+
+      	i = (i == 2) ? 1 : Math.floor(i * 5 / 11);
+    }
+}
+
+
+/*
+ * Сортировка расческой
+ * Лучшее/Среднее/Худшее: О(n log(n)) / O( (n^2)/(2^p) ) / O(n^2)
+ * Улучшение сортировки пузырьком. При каждом проходе сравнение происходит 
+ * не с соседним эл-м, а отстоящим на (n / 1.247), где n изначально равно 
+ * длинне массива. При последнем проходе происходит обычная сортировка пузырьком.
+ */
+function combS() {
+	const factor = 1.247;
+	let gapFactor = array.length / factor;
+  
+	while (gapFactor > 1) {
+  		const gap = Math.round(gapFactor);
+  		for (let i = 0, j = gap; j < array.length; i++, j++) {
+    		if (array[i] >= array[j]) {
+      			[ array[i], array[j] ] = [ array[j], array[i] ];
+    		}
+  		}
+  		gapFactor = gapFactor / factor;
+	}
+}
+
+
+/*
+ * Сортировка подсчетом
+ * В теории: O(n + k), где n - кол-во элментов, а k - кол-во чисел диапазона. Но у меня это немного не так..
+ * Имеется большой массив состоящий из эл-в ограниченного диапазона. Данная сортировка 
+ * в новый массив (размером в диапазон допустимых значений) записывает кол-во 
+ * повторений каждого эл-та в исходном массиве. После этого из массива-копии, где 
+ * индекс = значению повторяющегося эл-та, а значение = кол-ву повторений, по порядку 
+ * "переписывается" исходный массив. 
+ */
+ var bufArr = {}; //bufArr хранит ссылку на объект
+function countingS(minVal, maxVal){
+    alert("Conunting Sort\nAll numbers must be in range [" + minVal + "," + maxVal + "] !\nYou can change minVal and maxVal in function call.");
+	var admitted = true;
+
+	for (var i = 0; i < array.length; i++) {
+		if (!(array[i] <= maxVal && array[i] >= minVal)) { admitted = false;}
+	}
+
+	if (admitted == false) {
+		alert("Не все числа массива соответствуют диапазону [" + minVal + "; " + maxVal + "] !\nМассив неотсортирован!");
+	} else {
+		if (maxVal <= minVal) {
+			alert("Error! maxVal <= minVal");
+			return;
+		}
+
+		var min = minVal, max = maxVal, negShift, bufArrSize;
+
+		if (minVal < 0 && maxVal > 0) { // интервал содержит и положительные, и отрицательные
+			bufArrSize = Math.abs(min) + max + 1;
+			negShift = max;
+  		} else {
+  			if (minVal < 0 && maxVal <= 0) { // интервал содержит только отрицательные и/или ноль
+  				bufArrSize = Math.abs(min) + 1;
+  				negShift = 0;
+  			} else { // интервал содержит только положительные и/или ноль
+  				bufArrSize = min + max + 1;
+  				negShift = 0;
+  			}
+  		}
+
+  		// создаем поле объекта - массив для отметки повторов чисел
+		bufArr.elems = new Array(bufArrSize);
+  		for (var k = 0; k < bufArrSize; k++){
+    		bufArr.elems[k] = 0;
+  		}
+
+  		var iter, rep = 0, j; //iter для отрицательных элементов; rep для количество повторений
+  		for (i = minVal; i <= maxVal; i++) { // перебор значений из диапазона, подсчет повторений элементов
+  			rep = 0;
+  			for (j = 0; j < array.length; j++) {
+  				if (array[j] == i){ rep++; }
+  			}
+
+  			if (rep != 0){
+  				if (i < 0) {
+  					bufArr.elems[-i + negShift] = rep; // запись кол-ва повторений эл-та в ячейку с индексом равным этому эл-ту
+  				} else {
+  					bufArr.elems[i] = rep;
+  				}	
+  			}
+  		}
+  		
+  		// перенос значений в исходный массив
+  		for (j = 0, i = minVal; i <= maxVal; i++) {
+  			
+  			if (i < 0) {
+  				rep = bufArr.elems[-i + negShift];
+  			} else {
+  				rep = bufArr.elems[i];
+  			}
+
+  			while (rep != 0) {
+  				array[j] = i;
+  				rep--;
+  				j++;
+  			}
+  		}
+	}
+	return;
+}
+
+
+
+/** Блочная сортировка
+ * При нормальном разбиении сложность линейная, O(n).
+ * Создается несколько корзин примерно (или стремясь к) одинакового размера,
+ * которые будут делить весь диапазон существующих значений чисел массива 
+ * поровну и по порядку между собой. Затем все козины заполняются числами   
+ * в соответствии с собственным (сформированным диапазоном чисел) и 
+ * сортируются любой другой сортировкой. 
+ */
+
+// Сортировка вставками для блочной сортировки
+function insertionSort(array) {
+	var length = array.length;
+
+	for(var i = 1; i < length; i++) {
+		var temp = array[i];
+		for(var j = i - 1; j >= 0 && array[j] > temp; j--) {
+			array[j+1] = array[j];
+		}
+		array[j+1] = temp;
+	}
+
+	return array;
+}
+
+// Implement bucket sort
+function bucketSort(bucketSize) {
+	if (array.length === 0) {
+		return alert("How are you get here.. ? ");
+	}
+
+	var i, minValue = array[0],
+	maxValue = array[0],
+	bucketSize = bucketSize || 5;
+
+  	array.forEach(function (currentVal) { // Поиск минимального и максимального числа
+  		if (currentVal < minValue) {
+  			minValue = currentVal;
+  		} else if (currentVal > maxValue) {
+  			maxValue = currentVal;
+  		}
+  	})
+
+  	// Инициализация корзин
+  	var bucketCount = Math.floor((maxValue - minValue) / bucketSize) + 1;
+  	var allBuckets = new Array(bucketCount);
+  
+  	for (i = 0; i < allBuckets.length; i++) {
+  		allBuckets[i] = [];
+  	}
+  
+  	// Наполнение корзин
+  	array.forEach(function (currentVal) {
+  		allBuckets[Math.floor((currentVal - minValue) / bucketSize)].push(currentVal);
+  	});
+
+  	// Сортировка корзин
+  	array.length = 0;
+  
+  	allBuckets.forEach(function(bucket) {
+  		insertionSort(bucket);
+  		bucket.forEach(function (element) {
+  			array.push(element)
+  		});
+  	});
+}
+
+
+/**  Поразрядная сортировка
+ * В теории сложность по времни(лучшая/худшая): O(n)/O(n*k).
+ * Существует две разновидности: LSD(по наимеьшему разряду) и MSD(по наибольшему разряду).
+ * Здесь реализовывался LSD алгоритм. Числа сортируются в зависимоти от наименьшего разряда,
+ * далее сравниваются по следующему по старшинству разряду и так далее до максимального 
+ * найденного среди чисел разряда (сначала по разряду единиц, потом десятков, сотен и т.д.). 
+ */
+function radixSortLSD(array) {
+    function negativeCheck(negArray){
+        array.forEach(function(num){ if (num < 0) { negArray.push(num); } } ); // отфильтровывание отрицательных
+        
+        var buffArray = []; 
+        array.forEach(function(num){ if (num >= 0) { buffArray.push(num); } } ); 
+        array = buffArray; // в исходном массиве оставляем только положительные
+        console.dir("array: " + array);
+
+        if (negArray.length !== 0) { // если нашлись отриц., сортируем их как положительные
+            negArray.forEach(function(num, indx){ negArray[indx] = Math.abs(num); });
+            negArray = radixSortLSD(negArray);
+            negArray.reverse(); // переворачиваем отсортированные
+            negArray.forEach(function(num, indx){ negArray[indx] = -num; }); // меняем знак на минус у всех
+            console.dir("negArray: " + negArray);
+        } 
+        return negArray;                    
+    }
+
+	function maxSumbolsInNum(arr) {
+		var num, max = 0;
+		arr.forEach(function(elem){
+				max = (Math.abs(elem) > max) ? Math.abs(elem) : max;
+			}
+		);
+		num = max.toString().length;
+
+		return num;
+	}
+
+    var negArray = [], negExist = false;
+    negArray = negativeCheck(negArray); // соритровка отрицательных отдельно
+    
+	var maxNumSymbols = maxSumbolsInNum(array);
+	var counter = [[]];
+    var mod = 10, dev = 1;
+
+    for (var i = 0; i < maxNumSymbols; i++, dev *= 10, mod *= 10) {
+        for (var j = 0; j < array.length; j++) {
+            var bucket = parseInt((array[j] % mod) / dev);
+            if (counter[bucket] == null ) {
+                counter[bucket] = [];
+            }
+            counter[bucket].push(array[j]);
+        }
+        var pos = 0;        
+        for (var j = 0; j < counter.length; j++) {
+            var value = null ;
+            if (counter[j] != null ) {
+                while ((value = counter[j].shift()) != null ) {
+                    array[pos++] = value;
+                }
+            }
+        }
+    }
+    if (negArray.length !== 0) {
+        array = negArray.concat(array); // добавление отсортированных отрицательных
+        return array;
+    } else {
+        return array;
+    }
+}
+
+
+/*
+ * Сортировка деревом
+ * Оценка сложности (Лучшая/Худшая): O(n*log(n))/O(n^2)
+ * Строится бинарное дерево, каждоподдерево которого обладает свойствами: значение 
+ * левого узла меньше, чем значение корневого узла; значение правого узла больше, 
+ * чем значение корневого узла. При правильном обходе дерева получается уже 
+ * отсортированный массив.
+ */
+class Node {
+    constructor(val) {
+        this.value = val;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+class BinaryTree {
+    constructor() {
+        this.root = null;
+    }
+
+    push(val) {
+        var root = this.root;
+        if (!root) {
+            this.root = new Node(val);
+            return;
+        }
+        var currentNode = root;
+        var newNode = new Node(val);
+        while (currentNode) {
+            if (val < currentNode.value) {
+                if (!currentNode.left) {
+                    currentNode.left = newNode;
+                    break;
+                }
+                else {
+                    currentNode = currentNode.left;
+                }
+            }
+            else {
+                if (!currentNode.right) {
+                    currentNode.right = newNode;
+                    break;
+                }
+                else {
+                    currentNode = currentNode.right;
+                }
+            }
+        }
+    }
+
+    pushArray(array){
+        array.forEach(element => {
+            this.push(element);
+        });
+    }
+    /**
+     * @description Возвращает массив элементов, полученный при обходе дерева
+     */
+    toArray(){
+        var node = this.root;
+        if (node) {
+            function bypass(node, treeArray){
+                if (node) {
+                    bypass(node.left, treeArray);
+                    treeArray.push(node.value);
+                    bypass(node.right, treeArray);
+                }
+            }
+            var treeArray = [];
+            bypass(node, treeArray);
+            return treeArray;
+        } 
+    }
+
+    /**
+     * @description Вывод элементов дерева при рекурсивном обходе по порядку.
+     */
+    treeBypass(){
+        var node = this.root;
+        this.treeBypassNode(node);
+    }
+
+    /**
+     * @description Вывод поддерева
+     * @param {*} node узел для вывода поддерева 
+     */
+    treeBypassNode(node) {
+        if(node){
+          this.treeBypassNode(node.left);            
+          console.dir(node.value);
+          this.treeBypassNode(node.right);
+        }
+    }
+}
+
+function treeSort(array){
+	var tree = new BinaryTree();
+	tree.pushArray(array);
+	return tree.toArray();
+}
+ 
+
+/**
+ * Случайная сортировка
+ * Оценка сложности (средняя): O(n*n!)
+ * Массив перемешивается и проверяется, упорядочен или нет.
+ * И так пока массив не будет отсортирован.
+ */
+function bogosort(array){
+	function shuffle(array) {
+		for (var j, x, i = array.length; i; j = Math.floor(Math.random() * i), x = array[--i], array[i] = array[j], array[j] = x);
+			return array;
+	}
+
+	function isSorted(array){
+		for(var i=1; i<array.length; i++) {
+			if (array[i-1] > array[i]) { return false; }
+		}
+		return true;
+	}
+
+    var startTime = new Date(), curTime; // чтобы не мучить компуктер
+    var sorted = false;
+    while(sorted == false){
+    	array = shuffle(array);
+    	sorted = isSorted(array);
+    	curTime = new Date();
+
+        // terminate if more than 1 minute
+        if (!(startTime.getHours() == curTime.getHours() && (curTime.getMinutes() - startTime.getMinutes()) < 1 )) {
+        	alert("\"You are terminated\" Terminator(c)");
+        	break;
+        } 
+    }
+    return array;
+}
+
+
+/* MAIN FUNCTION */
+function handler() {
+  var x = whatIsSort();
+  //alert(x); // вывод метода сортировки
+
+  if (x === undefined) {
+    alert("You haven't chosen sort type!");
+  } else {
+      if (field.value === "") {
+        generate();
+        toLog( x, "white");
+        toLog("initial: " + array, "grey");
+        setSortFunc(x);
+        toLog("sorted: " + array, "grey");
+        log.scrollTop = log.scrollHeight; // прокрутка консоли вниз
+      } else {
+        var myRegex = /^((0|\-?\d+)(\,\-?\d+)+|(0|\-?\d+))$/;   //  /^((0|\-?\d+)(\,\-?\d+)+|(0|\-?\d+))$/
+        var strArr = field.value;                               //  /^(0|\-?\d+)(\,\-?\d+)*/
+        
+        if (myRegex.test(strArr)){
+          array = JSON.parse("[" + field.value + "]");
+          toLog( x, "white");
+          toLog("initial: " + array, "grey");
+          setSortFunc(x);
+          toLog("sorted: " + array, "grey");
+          log.scrollTop = log.scrollHeight; // прокрутка консоли вниз
+        } else {
+          alert("Something in bag in text-field!");
+        }
+      }
+     
+  }
+}
+
+/* AUTOTESTS */
+function assertArrays(result, final){
+        if (Array.isArray(result) && Array.isArray(final) && (result.length == final.length)){
+            for(let i = 0; i < result.length; i++) {
+                if (result[i] !== final[i]) {return false;}
+        }
+    } else { return false; }
+    
+    return true;
+}
+
+function autotest(){
+    var sortTypes = document.getElementsByName("sortType");
+    for(let i = 0; i < sortTypes.length; i++){
+        sortTypes.item(i).checked = true;
+        generate();
+        var sourceArr = array.slice();
+        handler();
+        sourceArr.sort(function(a, b) {
+            return a - b;
+        });
+        toLog("final: " + sourceArr, "grey");
+        var boo = assertArrays(array, sourceArr);
+        var color = (boo == true) ? "green" : "red";
+        toLog("assertArrays(result, final) returned " + boo.toString().toUpperCase(), color);
+    }
+}
+
+</script>
+</body>
+</html>
